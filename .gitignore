@@ -1,0 +1,9 @@
+.ether-*/geth
+.ether-*/geth.ipc
+.ethash
+.bootnode
+.idea
+*.iml
+*/node_modules/*
+gateway/build
+gateway/dist

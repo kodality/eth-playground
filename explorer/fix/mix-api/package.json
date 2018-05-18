@@ -1,0 +1,62 @@
+{
+  "_from": "github:mix-blockchain/mix-api",
+  "_id": "mix-api@1.0.0",
+  "_inBundle": false,
+  "_location": "/mix-api",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "mix-api@github:mix-blockchain/mix-api",
+    "name": "mix-api",
+    "escapedName": "mix-api",
+    "rawSpec": "github:mix-blockchain/mix-api",
+    "saveSpec": "github:mix-blockchain/mix-api",
+    "fetchSpec": null,
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "github:mix-blockchain/mix-api#6f7b345f2dc2f6c54091a7a33526ab04d1d20b80",
+  "_spec": "mix-api@github:mix-blockchain/mix-api",
+  "_where": "/Users/juri/workspace/ethereum/explorer",
+  "author": {
+    "name": "James Drummond",
+    "email": "jdrummond@link-blockchain.org"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/link-blockchain/mix-api/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "moment": "^2.18.1",
+    "web3": "^0.19.0"
+  },
+  "deprecated": false,
+  "description": "Mix api is a wrapper of the web3 api for high level interaction with Ethereum based blockchains",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3",
+    "web3-mock": "github:link-blockchain/web3-mock"
+  },
+  "homepage": "https://github.com/link-blockchain/mix-api#readme",
+  "license": "GPL-3.0",
+  "main": "index.js",
+  "name": "mix-api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mix-blockchain/mix-api.git"
+  },
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register test"
+  },
+  "version": "1.0.0"
+}
