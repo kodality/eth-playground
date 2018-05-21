@@ -6,6 +6,7 @@ import TruffleConfig from '../truffle'
 import bodyParser from 'body-parser'
 import stringify from 'canonical-json'
 
+const PORT = 8088;
 
 const app = express();
 app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -45,7 +46,8 @@ app.post('/checkDocument', function (req, res) {
     });
 });
 
-app.listen(8080, function () {
+
+app.listen(PORT, function () {
 
     let host = 'http://' + config.host + ':' + config.port;
     console.log("connecting to ethereum rpc at: " + host);
@@ -64,5 +66,5 @@ app.listen(8080, function () {
         console.log(e);
     });
 
-    console.log("Server is up and running!")
+    console.log("Server is up and running at: http://localhost:" + PORT)
 });

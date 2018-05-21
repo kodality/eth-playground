@@ -7,3 +7,4 @@
 */node_modules/*
 gateway/build
 gateway/dist
+harmony/ethash

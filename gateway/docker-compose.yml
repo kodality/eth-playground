@@ -1,0 +1,15 @@
+version: '3'
+services:
+  gateway:
+    build: .
+    image: gateway
+    ports:
+      - "8088:8088"
+    networks:
+      - harmony_ethereum
+    environment:
+      ETH_HOST: "harmony"
+
+networks:
+  harmony_ethereum:
+    external: true

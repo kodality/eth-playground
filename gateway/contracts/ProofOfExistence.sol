@@ -11,7 +11,7 @@ contract ProofOfExistence {
         bytes32 proof = proofFor(document);
         storeProof(proof);
     }
-    // helper function to get a document's sha256
+    // helper function to get a document's keccak256
     function proofFor(string document) private pure returns (bytes32) {
         return keccak256(document);
     }

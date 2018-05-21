@@ -9,5 +9,5 @@ RUN npm i -g npm@5.6.0
 RUN npm install -g truffle
 RUN npm install
 
-EXPOSE 8080
+EXPOSE 8088
 ENTRYPOINT "/app/start.sh"
