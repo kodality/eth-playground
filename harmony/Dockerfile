@@ -5,7 +5,7 @@ RUN apt-get install -y git && \
 
 WORKDIR /ethereum-harmony
 
-COPY resources /ethereum-harmony/src/main/resources
+COPY src/main /ethereum-harmony/src/main
 RUN ./gradlew classes
 
 COPY keystore /root/ethereumj/keystore
