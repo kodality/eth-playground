@@ -10,7 +10,7 @@ module.exports = {
     networks: {
         development: {
             host: host,
-            port: 8080,
+            port: "8080/eth/rpc",
             network_id: '*', // Match any network id
             gas: 9000000000, // should be lower than gasLimit in genesis config
             from: '0x8432885e624a8d15c9774cbada102c08957887ca'
