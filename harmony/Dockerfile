@@ -2,8 +2,8 @@ FROM java:8
 
 RUN apt-get install -y git && \
     git clone https://github.com/kodality/ethereum-harmony
-
 WORKDIR /ethereum-harmony
+RUN git pull
 
 RUN ./gradlew classes
 

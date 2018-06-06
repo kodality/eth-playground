@@ -11,7 +11,7 @@ const PORT = 8088;
 const app = express();
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true
+  extended: true
 }));
 
 const config = TruffleConfig.networks.development;
@@ -19,52 +19,88 @@ const ProofOfExistence = contract(proofOfExistence);
 
 let poe;
 
-app.post('/notarize', function (req, res) {
-    let document = stringify(req.body);
-    poe.notarize(document).then(function (ignored) {
-        console.log("DOCUMENT NOTARIZED: " + document);
-        return res.send(req.body);
-    }).catch(function (e) {
-        console.log(e);
-        return res.status(500).send("Failed to notarize document: " + e.message);
-    });
+app.listen(PORT, function() {
+
+  let host = 'http://' + config.host + ':' + config.port;
+  console.log("connecting to ethereum rpc at: " + host);
+
+  let httpProvider = new Web3.providers.HttpProvider(host);
+
+  new Web3(httpProvider).eth.defaultAccount = config.from;
+
+  ProofOfExistence.setProvider(httpProvider);
+  ProofOfExistence.defaults({
+    gas: config.gas
+  });
+  ProofOfExistence.deployed().then(function(contract) {
+    poe = contract;
+  }).catch(function(e) {
+    console.log(e);
+  });
+
+  console.log("Server is up and running at: http://localhost:" + PORT)
 });
 
+app.post('/notarize', function(req, res) {
+  let payload = req.body;
+  let document = stringify(payload.document);
 
-app.post('/checkDocument', function (req, res) {
-    let document = stringify(req.body);
-    poe.checkDocument(document).then(function (result) {
-        console.log("DOCUMENT CHECKED: " + document);
-        if (result === true) {
-            return res.status(200).send();
-        } else {
-            return res.status(500).send("Document was modified or haven't been notarized.");
-        }
-    }).catch(function (e) {
-        console.log(e);
-        return res.status(500).send("Failed to notarize document: " + e.message);
+  poe.notarize.call(payload.id, document).then(function(result) {
+    if (result === '0x') {
+      return res.status(500).send("Failed to notarize document, given id already exist");
+    }
+    poe.notarize(payload.id, document).then(function(txReceipt) {
+      console.log(txReceipt);
+      console.log("Document with id " + payload.id + " is notarized, result hash: " + result);
+      return res.send(result);
     });
+  }).catch(function(e) {
+    return res.status(500).send("Failed to notarize document with id " + payload.id + ": " + e.message);
+  });
 });
 
+app.post('/checkDocument', function(req, res) {
+  let payload = req.body;
+  let document = stringify(payload.document);
 
-app.listen(PORT, function () {
+  poe.checkDocument.call(payload.id, document).then(function(result) {
+    console.log("Document checked by content and id: " + payload.id);
+    return res.status(200).send(result === true);
+  }).catch(function(e) {
+    console.log(e);
+    return res.status(500).send("Failed to check document: " + e.message);
+  });
+});
 
-    let host = 'http://' + config.host + ':' + config.port;
-    console.log("connecting to ethereum rpc at: " + host);
+app.post('/checkDocumentId', function(req, res) {
+  let id = req.body.id;
 
-    let httpProvider = new Web3.providers.HttpProvider(host);
+  poe.checkDocumentId.call(id).then(function(result) {
+    console.log("Document checked by id: " + id);
+    return res.status(200).send(result === true);
+  }).catch(function(e) {
+    console.log(e);
+    return res.status(500).send("Failed to check document by id: " + e.message);
+  });
+});
 
-    new Web3(httpProvider).eth.defaultAccount = config.from;
+app.get('/documentIds', function(req, res) {
+  poe.getTotalDocumentsCount.call().then(function(count) {
+    let promises = [];
+    for (let i = 0; i < count; i++) {
+      promises.push(new Promise(function(resolve) {
+        poe.getDocumentIdByIndex.call(i).then(function(id) {
+          console.log("resolved " + id);
+          resolve(id);
+        });
+      }));
+    }
 
-    ProofOfExistence.setProvider(httpProvider);
-    ProofOfExistence.defaults({
-        gas: config.gas
+    Promise.all(promises).then(function(results) {
+      return res.status(200).send(results);
     });
-    ProofOfExistence.deployed().then(function (contract) {
-        poe = contract;
-    }).catch(function (e) {
-        console.log(e);
-    });
-
-    console.log("Server is up and running at: http://localhost:" + PORT)
+  }).catch(e => {
+    console.log(e);
+    return res.status(200).send(e);
+  });
 });
